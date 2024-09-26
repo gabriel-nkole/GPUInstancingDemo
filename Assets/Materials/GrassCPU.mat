@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Grass
+  m_Name: GrassCPU
   m_Shader: {fileID: 4800000, guid: eb939718c04b644459bf528f0ff08abf, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -23,6 +23,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _GrassTex:
+        m_Texture: {fileID: 2800000, guid: b1b985742daf7c94cad28fa5eed40f64, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: b1b985742daf7c94cad28fa5eed40f64, type: 3}
         m_Scale: {x: 1, y: 1}

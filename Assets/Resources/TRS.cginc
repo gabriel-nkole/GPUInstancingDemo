@@ -22,4 +22,4 @@ float4x4 Translate(float3 position) {
                     0,          1,         0, position.y,
                     0,          0,         1, position.z,
                     0,          0,         0, 1);
-} 
+}

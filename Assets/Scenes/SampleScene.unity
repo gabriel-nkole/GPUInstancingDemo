@@ -334,10 +334,10 @@ GameObject:
   - component: {fileID: 1165965662}
   - component: {fileID: 1165965665}
   - component: {fileID: 1165965660}
-  - component: {fileID: 1165965663}
   - component: {fileID: 1165965664}
+  - component: {fileID: 1165965663}
   m_Layer: 0
-  m_Name: Instancing
+  m_Name: GrassPlane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -410,7 +410,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1165965659}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 066ed2a7ece1c0d41864cefd739f16b7, type: 3}
   m_Name: 

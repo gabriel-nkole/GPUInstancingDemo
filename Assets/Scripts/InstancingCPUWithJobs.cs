@@ -4,7 +4,6 @@ using Unity.Collections;
 using Unity.Burst;
 
 public class InstancingCPUWithJobs : MonoBehaviour {
-
     [SerializeField]
     Mesh Mesh;
 
@@ -84,9 +83,9 @@ public class InstancingCPUWithJobs : MonoBehaviour {
     }
 
     void OnDisable() {
-        matrices = null;
-        matrices2 = null;
         matrices3 = null;
+        matrices2 = null;
+        matrices = null;
     }
 
     void OnValidate() {
@@ -99,6 +98,7 @@ public class InstancingCPUWithJobs : MonoBehaviour {
     void Update() {
         if (this.transform.hasChanged) {
             OnValidate();
+            this.transform.hasChanged = false;
         }
 
         Graphics.DrawMeshInstanced(Mesh, 0, Mat, matrices);

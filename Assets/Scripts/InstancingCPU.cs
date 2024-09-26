@@ -1,7 +1,6 @@
 using UnityEngine;
 
 public class InstancingCPU : MonoBehaviour {
-
     [SerializeField]
     Mesh Mesh;
 
@@ -15,14 +14,15 @@ public class InstancingCPU : MonoBehaviour {
     Matrix4x4[] matrices2;
     Matrix4x4[] matrices3;
 
+
     void OnEnable() { 
         matrices = new Matrix4x4[Resolution*Resolution];
         matrices2 = new Matrix4x4[Resolution*Resolution];
         matrices3 = new Matrix4x4[Resolution*Resolution];
 
-        Quaternion[] rotations = { Quaternion.identity, Quaternion.Euler(0, 45, 0), Quaternion.Euler(0, -45, 0)};
-        Vector3 scale = Vector3.one;
         Matrix4x4 parentToWorld = this.transform.localToWorldMatrix;
+        Vector3 scale = Vector3.one;
+        Quaternion[] rotations = { Quaternion.identity, Quaternion.Euler(0, 45, 0), Quaternion.Euler(0, -45, 0)};
         for (int i = 0; i < Resolution*Resolution; i++) {
             float x = i % Resolution;
             float z = i / Resolution;
@@ -36,9 +36,9 @@ public class InstancingCPU : MonoBehaviour {
     }
 
     void OnDisable() {
-        matrices = null;
-        matrices2 = null;
         matrices3 = null;
+        matrices2 = null;
+        matrices = null;
     }
 
     void OnValidate() {
@@ -51,6 +51,7 @@ public class InstancingCPU : MonoBehaviour {
     void Update() {
         if (this.transform.hasChanged) {
             OnValidate();
+            this.transform.hasChanged = false;
         }
 
         Graphics.DrawMeshInstanced(Mesh, 0, Mat, matrices);

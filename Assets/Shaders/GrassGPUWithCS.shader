@@ -2,19 +2,26 @@
 
 Shader "Custom/GrassGPUWithCS" {
     Properties {
-        [NoScaleOffset] _MainTex ("Texture", 2D) = "white" {}
+        [NoScaleOffset] _GrassTex ("Grass Texture", 2D) = "white" {}
     }
+
     SubShader {
         Cull Off
         ZWrite On
 
-        Pass{
+        Pass {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
 		    #pragma target 4.5
 
             #include "UnityCG.cginc"
+
+
+            StructuredBuffer<float4x4> _Matrices;
+
+            sampler2D _GrassTex;
+
 
             struct MeshData {
                 float4 vertex : POSITION;
@@ -26,10 +33,7 @@ Shader "Custom/GrassGPUWithCS" {
                 float2 uv : TEXCOORD0;
             };
 
-            sampler2D _MainTex;
-            StructuredBuffer<float4x4> _Matrices;
-
-            Interpolators vert (MeshData v, uint instanceID : SV_InstanceID) {
+            Interpolators vert(MeshData v, uint instanceID : SV_InstanceID) {
                 Interpolators o;
 
                 unity_ObjectToWorld = _Matrices[instanceID];
@@ -38,9 +42,11 @@ Shader "Custom/GrassGPUWithCS" {
                 return o;
             }
 
-            float4 frag (Interpolators i) : SV_Target {
-                float4 col = tex2D(_MainTex, i.uv);
+
+            float4 frag(Interpolators i) : SV_Target {
+                float4 col = tex2D(_GrassTex, i.uv);
                 clip(col.a - 0.6);
+
                 return float4(col.xyz, 1);
             }
             ENDCG

@@ -1,14 +1,15 @@
 // Upgrade NOTE: replaced 'UNITY_INSTANCE_ID' with 'UNITY_VERTEX_INPUT_INSTANCE_ID'
 
-Shader "Custom/Grass" {
+Shader "Custom/GrassCPU" {
     Properties {
-        [NoScaleOffset] _MainTex ("Texture", 2D) = "white" {}
+        [NoScaleOffset] _GrassTex ("Grass Texture", 2D) = "white" {}
     }
+
     SubShader {
         Cull Off
         ZWrite On
 
-        Pass{
+        Pass {
             CGPROGRAM
             #pragma vertex vert
             #pragma fragment frag
@@ -16,6 +17,10 @@ Shader "Custom/Grass" {
 		    #pragma target 4.5
 
             #include "UnityCG.cginc"
+
+
+            sampler2D _GrassTex;
+
 
             struct MeshData {
                 float4 vertex : POSITION;
@@ -29,11 +34,8 @@ Shader "Custom/Grass" {
                 UNITY_VERTEX_INPUT_INSTANCE_ID
             };
 
-            sampler2D _MainTex;
-
-            Interpolators vert (MeshData v, uint instanceID : SV_INSTANCEID) {
+            Interpolators vert(MeshData v, uint instanceID : SV_INSTANCEID) {
                 Interpolators o;
-
                 UNITY_SETUP_INSTANCE_ID (v);
                 UNITY_TRANSFER_INSTANCE_ID (v, o);
 
@@ -42,11 +44,13 @@ Shader "Custom/Grass" {
                 return o;
             }
 
-            float4 frag (Interpolators i) : SV_Target {
+
+            float4 frag(Interpolators i) : SV_Target {
                 UNITY_SETUP_INSTANCE_ID (i);
                 
-                float4 col = tex2D(_MainTex, i.uv);
+                float4 col = tex2D(_GrassTex, i.uv);
                 clip(col.a - 0.6);
+
                 return float4(col.xyz, 1);
             }
             ENDCG

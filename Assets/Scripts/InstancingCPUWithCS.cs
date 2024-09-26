@@ -1,7 +1,6 @@
 using UnityEngine;
 
 public class InstancingCPUWithCS: MonoBehaviour {
-
     [SerializeField]
     Mesh Mesh;
 
@@ -17,36 +16,36 @@ public class InstancingCPUWithCS: MonoBehaviour {
     Matrix4x4[] matrices3;
 
 
-    const int LOCAL_WORK_GROUPS_X = 1;
-    const int LOCAL_WORK_GROUPS_Y = 1;
+    const int LOCAL_WORK_GROUPS_X = 8;
+    const int LOCAL_WORK_GROUPS_Y = 8;
 
     void OnEnable() {
-        int threadGroupsX = Mathf.CeilToInt(Resolution / LOCAL_WORK_GROUPS_X);
-        int threadGroupsY = Mathf.CeilToInt(Resolution / LOCAL_WORK_GROUPS_Y);
-
+        int threadGroupsX = Mathf.CeilToInt((float)Resolution / (float)LOCAL_WORK_GROUPS_X);
+        int threadGroupsY = Mathf.CeilToInt((float)Resolution / (float)LOCAL_WORK_GROUPS_Y);
 
         matrices = new Matrix4x4[Resolution*Resolution];
         matrices2 = new Matrix4x4[Resolution*Resolution];
         matrices3 = new Matrix4x4[Resolution*Resolution];
         matricesBuffer = new ComputeBuffer(Resolution*Resolution, sizeof(float) * 16);
 
-        ComputeShader InstancingCompute = Resources.Load<ComputeShader>("InstancingCS");
-        InstancingCompute.SetFloat("_Resolution", Resolution);
-        InstancingCompute.SetBuffer(0, "_Matrices", matricesBuffer);
-        Matrix4x4 parentToWorld = this.transform.localToWorldMatrix;
-        InstancingCompute.SetMatrix("_ParentToWorld", parentToWorld);
 
 
-        InstancingCompute.SetFloat("_Angle", 0f);
-        InstancingCompute.Dispatch(0, threadGroupsX, threadGroupsY, 1);
+        ComputeShader Grass_CS = Resources.Load<ComputeShader>("Grass");
+        Grass_CS.SetFloat("_Resolution", Resolution);
+        Grass_CS.SetBuffer(0, "_Matrices", matricesBuffer);
+        Grass_CS.SetMatrix("_ParentToWorld", this.transform.localToWorldMatrix);
+
+
+        Grass_CS.SetFloat("_Angle", 0f);
+        Grass_CS.Dispatch(0, threadGroupsX, threadGroupsY, 1);
         matricesBuffer.GetData(matrices);
 
-        InstancingCompute.SetFloat("_Angle", 45f);
-        InstancingCompute.Dispatch(0, threadGroupsX, threadGroupsY, 1);
+        Grass_CS.SetFloat("_Angle", 45f);
+        Grass_CS.Dispatch(0, threadGroupsX, threadGroupsY, 1);
         matricesBuffer.GetData(matrices2);
         
-        InstancingCompute.SetFloat("_Angle", -45f);
-        InstancingCompute.Dispatch(0, threadGroupsX, threadGroupsY, 1);
+        Grass_CS.SetFloat("_Angle", -45f);
+        Grass_CS.Dispatch(0, threadGroupsX, threadGroupsY, 1);
         matricesBuffer.GetData(matrices3);
     }
 
@@ -54,9 +53,9 @@ public class InstancingCPUWithCS: MonoBehaviour {
         matricesBuffer.Release();
         matricesBuffer = null;
 
-        matrices = null;
-        matrices2 = null;
         matrices3 = null;
+        matrices2 = null;
+        matrices = null;
     }
 
     void OnValidate() {
@@ -69,6 +68,7 @@ public class InstancingCPUWithCS: MonoBehaviour {
     void Update() {
         if (this.transform.hasChanged) {
             OnValidate();
+            this.transform.hasChanged = false;
         }
 
         Graphics.DrawMeshInstanced(Mesh, 0, Mat, matrices);

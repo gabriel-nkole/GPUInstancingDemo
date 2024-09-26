@@ -1,0 +1,20 @@
+#include "TRS.cginc"
+
+#pragma kernel ComputeTransformations
+
+
+uint _Resolution;
+float4x4 _ParentToWorld;
+float _Angle;
+RWStructuredBuffer<float4x4> _Matrices;
+
+
+[numthreads(8,8,1)]
+void ComputeTransformations(uint3 id : SV_DispatchThreadID) {
+	if (id.x < _Resolution && id.y < _Resolution) {
+		float3 translation = float3(id.x - 0.5 * (_Resolution - 1.0), 0.5, id.y - 0.5 * (_Resolution - 1.0));
+		float4x4 TRS = mul(Translate(translation), mul(Rotate(_Angle), Scale(float3(1,1,1))));
+
+		_Matrices[id.y*_Resolution + id.x] = mul(_ParentToWorld, TRS);
+	}
+}

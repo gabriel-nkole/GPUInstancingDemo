@@ -1,7 +1,6 @@
 using UnityEngine;
 
 public class InstancingGPU : MonoBehaviour {
-
     [SerializeField]
     Mesh Mesh;
 
@@ -14,6 +13,7 @@ public class InstancingGPU : MonoBehaviour {
     ComputeBuffer argsBuffer;
     private uint[] args = new uint[5] {0, 0, 0, 0, 0};
 
+
     void OnEnable() {
         argsBuffer = new ComputeBuffer(5, sizeof(uint), ComputeBufferType.IndirectArguments);
 
@@ -24,8 +24,7 @@ public class InstancingGPU : MonoBehaviour {
         argsBuffer.SetData(args);
 
         Mat.SetFloat("_Resolution", Resolution);
-        Matrix4x4 parentToWorld = this.transform.localToWorldMatrix;
-        Mat.SetMatrix("_ParentToWorld", parentToWorld);
+        Mat.SetMatrix("_ParentToWorld", this.transform.localToWorldMatrix);
     }
 
     void OnDisable() {
@@ -43,9 +42,11 @@ public class InstancingGPU : MonoBehaviour {
     void Update() {
         if (this.transform.hasChanged) {
             OnValidate();
+            this.transform.hasChanged = false;
         }
 
         MaterialPropertyBlock mpb = new MaterialPropertyBlock();
+
         mpb.SetFloat("_Angle", 0f);
         Graphics.DrawMeshInstancedIndirect(Mesh, 0, Mat, new Bounds(Vector3.zero, new Vector3(300.0f, 200.0f, 300.0f)), argsBuffer, 0, mpb);
 
