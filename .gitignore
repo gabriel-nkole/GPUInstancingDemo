@@ -1,11 +1,9 @@
 .vs/
 .vsconfig
 Assembly-CSharp.csproj
-Editor_FPS.png
-Editor_NoFPS.png
 LearningGPUInstancing.sln
 Library/
 Logs/
-Screenshot.png
 obj/
 Temp/
+Media/
